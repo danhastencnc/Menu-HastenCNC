@@ -1,59 +1,47 @@
-// getting all required elements
-const searchWrapper = document.querySelector(".search-input");
-const inputBox = searchWrapper.querySelector("input");
-const suggBox = searchWrapper.querySelector(".autocom-box");
-const icon = searchWrapper.querySelector(".icon");
-let linkTag = searchWrapper.querySelector("a");
-let webLink;
+// create a map of search terms to URLs
+const searchUrls = new Map();
+searchUrls.set("f-620-003 option a", "https://forms.gle/TvC6a1bnP7YfZq8e9");
 
-// if user press any key and release
-inputBox.onkeyup = (e)=>{
-    let userData = e.target.value; //user enetered data
-    let emptyArray = [];
-    if(userData){
-        icon.onclick = ()=>{
-            webLink = `https://tinyurl.com/${userData}`;
-            linkTag.setAttribute("href", webLink);
-            linkTag.click();
-        }
-        emptyArray = suggestions.filter((data)=>{
-            //filtering array value and user characters to lowercase and return only those words which are start with user enetered chars
-            return data.toLocaleLowerCase().startsWith(userData.toLocaleLowerCase());
-        });
-        emptyArray = emptyArray.map((data)=>{
-            // passing return data inside li tag
-            return data = `<li>${data}</li>`;
-        });
-        searchWrapper.classList.add("active"); //show autocomplete box
-        showSuggestions(emptyArray);
-        let allList = suggBox.querySelectorAll("li");
-        for (let i = 0; i < allList.length; i++) {
-            //adding onclick attribute in all li tag
-            allList[i].setAttribute("onclick", "select(this)");
-        }
-    }else{
-        searchWrapper.classList.remove("active"); //hide autocomplete box
-    }
-}
 
-function select(element){
-    let selectData = element.textContent;
-    inputBox.value = selectData;
-    icon.onclick = ()=>{
-        webLink = `https://tinyurl.com/${selectData}`;
-        linkTag.setAttribute("href", webLink);
-        linkTag.click();
-    }
-    searchWrapper.classList.remove("active");
-}
 
-function showSuggestions(list){
-    let listData;
-    if(!list.length){
-        userValue = inputBox.value;
-        listData = `<li>${userValue}</li>`;
-    }else{
-      listData = list.join('');
+const searchBox = document.querySelector('#search-box');
+const searchButton = document.querySelector('#search-button');
+
+// create the datalist element and add it to the search form
+const searchOptions = document.createElement('datalist');
+searchOptions.id = 'search-options';
+searchBox.parentElement.appendChild(searchOptions);
+
+// add event listener for when the user types in the search box
+searchBox.addEventListener('input', () => {
+  // get the current search term
+  const searchTerm = searchBox.value;
+
+  // if the search term is empty, clear the options in the datalist
+  if (searchTerm === '') {
+    searchOptions.innerHTML = '';
+    return;
+  }
+
+  // otherwise, show the matching options in the datalist
+  let options = '';
+  searchUrls.forEach((value, key) => {
+    if (key.startsWith(searchTerm.toLowerCase())) {
+      options += `<option value="${key}"></option>`;
     }
-    suggBox.innerHTML = listData;
-}
+  });
+  searchOptions.innerHTML = options;
+});
+// add event listener for when the user clicks the search button
+searchButton.addEventListener('click', () => {
+  const searchTerm = searchBox.value;
+  const url = searchUrls.get(searchTerm.toLowerCase());
+  if (url) {
+    // if there is a URL for the search term, open it in a new tab
+    window.open(url, '_blank');
+  } else {
+    // otherwise, use the tinyURL as a fallback
+    const webLink = `https://tinyurl.com/${searchTerm}`;
+    window.open(webLink, '_blank');
+  }
+});
