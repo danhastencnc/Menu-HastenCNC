@@ -39,13 +39,14 @@ datalist {
 }
 
 #search-box {
-  width: 70%;
   padding: 12px;
   font-size: 16px;
   border: none;
   outline: none;
   border-radius: 5px;
   box-shadow: 0 0 1px #ccc;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 #search-button {
@@ -85,4 +86,13 @@ datalist {
   background-image: url(https://images.pexels.com/photos/7254428/pexels-photo-7254428.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1);
   background-size: cover;
   color: white;
+}
+
+@media (max-width: 600px) {
+  #search-box {
+    width: 90%;
+  }
+  #search-button {
+    width: 10%;
+  }
 }
